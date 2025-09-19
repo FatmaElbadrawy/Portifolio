@@ -8,10 +8,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
         html,
         body {
             font-family: 'Inter', sans-serif;
             color: #fff;
+            overflow-x: hidden;
         }
 
         #main-background {
@@ -36,6 +38,12 @@
             flex-direction: column;
             background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 640px) {
+            #main-container {
+                padding: 2rem 1rem;
+            }
         }
 
         #top-nav {
@@ -65,7 +73,7 @@
             overflow-y: hidden;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
-            padding: 6rem 2rem;
+            padding: 6rem 2rem; 
             gap: 3rem;
             justify-content: flex-start;
             transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -81,8 +89,9 @@
 
         #card-gallery-container.minimized {
             height: 180px;
-            padding: 1rem;
+            padding: 1rem 2rem;
             gap: 1.5rem;
+            
             overflow-x: scroll;
             overflow-y: hidden;
         }
@@ -545,13 +554,13 @@
 
         modalCloseBtn.addEventListener('click', () => {
             videoModal.classList.remove('show');
-            videoPlayer.src = "";
+            videoPlayer.src = ""; 
         });
 
         videoModal.addEventListener('click', (event) => {
             if (event.target === videoModal) {
                 videoModal.classList.remove('show');
-                videoPlayer.src = "";
+                videoPlayer.src = ""; 
             }
         });
 
