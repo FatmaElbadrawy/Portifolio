@@ -153,7 +153,7 @@
             border-bottom-left-radius: 0.5rem;
             border-bottom-right-radius: 0.5rem;
         }
-
+        
         .card-content {
             white-space: normal;
         }
@@ -289,9 +289,7 @@
         <div class="modal-content">
             <button id="modal-close" class="modal-close">&times;</button>
             <div class="video-container">
-                <iframe id="video-player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen class="w-full h-full object-cover rounded-lg"></iframe>
+                <iframe id="video-player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full object-cover rounded-lg"></iframe>
             </div>
         </div>
     </div>
@@ -502,9 +500,9 @@
 
             if (currentProject.backgroundImageUrl) {
                 mainBackground.style.backgroundImage = `url('${currentProject.backgroundImageUrl}')`;
-                mainBackground.style.backgroundColor = 'transparent';
+                mainBackground.style.backgroundColor = 'transparent'; 
             } else {
-                mainBackground.style.backgroundImage = 'none';
+                mainBackground.style.backgroundImage = 'none'; 
                 mainBackground.style.backgroundColor = currentProject.bgColor;
             }
 
