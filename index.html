@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
+        html,
         body {
             font-family: 'Inter', sans-serif;
             background-color: #000;
@@ -66,7 +66,7 @@
             overflow-y: hidden;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
-            padding: 6rem 4rem 6rem .6rem;
+            padding: 6rem 2rem;
             gap: 3rem;
             justify-content: flex-start;
             transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -74,9 +74,11 @@
 
         #card-gallery-container.minimized {
             height: 180px;
-            padding: 1rem 3rem;
+            /* Changed padding to a more mobile-friendly value to prevent overflow issues */
+            padding: 1rem 1rem;
             gap: 1.5rem;
-            overflow: visible;
+            overflow-x: scroll;
+            overflow-y: hidden;
         }
 
         #card-gallery-container::-webkit-scrollbar {
@@ -153,7 +155,7 @@
             border-bottom-left-radius: 0.5rem;
             border-bottom-right-radius: 0.5rem;
         }
-        
+
         .card-content {
             white-space: normal;
         }
@@ -289,7 +291,9 @@
         <div class="modal-content">
             <button id="modal-close" class="modal-close">&times;</button>
             <div class="video-container">
-                <iframe id="video-player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full object-cover rounded-lg"></iframe>
+                <iframe id="video-player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen class="w-full h-full object-cover rounded-lg"></iframe>
             </div>
         </div>
     </div>
@@ -500,9 +504,9 @@
 
             if (currentProject.backgroundImageUrl) {
                 mainBackground.style.backgroundImage = `url('${currentProject.backgroundImageUrl}')`;
-                mainBackground.style.backgroundColor = 'transparent'; 
+                mainBackground.style.backgroundColor = 'transparent';
             } else {
-                mainBackground.style.backgroundImage = 'none'; 
+                mainBackground.style.backgroundImage = 'none';
                 mainBackground.style.backgroundColor = currentProject.bgColor;
             }
 
@@ -541,13 +545,13 @@
 
         modalCloseBtn.addEventListener('click', () => {
             videoModal.classList.remove('show');
-            videoPlayer.src = ""; // Stop the video
+            videoPlayer.src = "";
         });
 
         videoModal.addEventListener('click', (event) => {
             if (event.target === videoModal) {
                 videoModal.classList.remove('show');
-                videoPlayer.src = ""; // Stop the video
+                videoPlayer.src = "";
             }
         });
 
