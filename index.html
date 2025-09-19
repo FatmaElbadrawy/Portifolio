@@ -9,11 +9,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-        html,
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #000;
             color: #fff;
-            overflow-x: hidden;
         }
 
         #main-background {
@@ -38,12 +37,6 @@
             flex-direction: column;
             background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
-        }
-
-        @media (max-width: 640px) {
-            #main-container {
-                padding: 2rem 1rem;
-            }
         }
 
         #top-nav {
@@ -73,27 +66,17 @@
             overflow-y: hidden;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
-            padding: 6rem 2rem; 
+            padding: 6rem 4rem 6rem .6rem;
             gap: 3rem;
             justify-content: flex-start;
             transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
-        
-        /* Adjusted padding and gap for better mobile responsiveness */
-        @media (max-width: 640px) {
-            #card-gallery-container {
-                padding: 2rem 1rem;
-                gap: 1.5rem;
-            }
-        }
 
         #card-gallery-container.minimized {
             height: 180px;
-            padding: 1rem 2rem;
+            padding: 1rem 3rem;
             gap: 1.5rem;
-            
-            overflow-x: scroll;
-            overflow-y: hidden;
+            overflow: visible;
         }
 
         #card-gallery-container::-webkit-scrollbar {
@@ -322,59 +305,65 @@
                 heroTitle: 'Fatma Elbadrawy',
                 heroSubtitle: 'Inspired to create, design, and develop life-changing experiences.',
                 content: 'For me, technology is about equity, access, and creating opportunities before chasing convenience or luxury. I would rather build solutions that help those struggling or excluded than add another layer of luxury for those who already have plenty, because real impact comes from giving everyone the tools to thrive. I believe difference is essential, never shameful, and that mindset shapes the kind of projects I want to work on.',
-                imageUrl: 'https://placehold.co/200x240/1e293b/f8fafc?text=About+Me',
-                backgroundImageUrl: 'https://placehold.co/1200x800/1e293b/f8fafc?text=About+Me'
+                imageUrl: './assets/images/pfp.jpeg',
+                backgroundImageUrl: './assets/images/temp.jpeg'
             },
             {
                 id: 2,
                 title: 'Japan Expo 2025',
+                // subtitle: 'Representing Qatar at Japan Expo 2025',
                 heroTitle: 'Undergraduate Project to Represent Qatar University Globally',
                 heroSubtitle: 'Showcasing innovation on an international stage.',
                 content: 'My Multidisciplinary Senior Design Project team is proud to have worked on the only undergraduate project chosen to represent Qatar University at Expo Japan 2025 in Osaka. We showcased a multidisciplinary innovation: a gamified Extended Reality (XR) rehabilitation system paired with a hand device. The project combined assistive technology, immersive design, and robotics to deliver a solution that empowers patients in their recovery journey and health care providers in their care delivery. ',
-                backgroundImageUrl: 'https://placehold.co/1200x800/164e63/f8fafc?text=Japan+Expo',
-                imageUrl: 'https://placehold.co/200x240/164e63/f8fafc?text=Japan+Expo'
+                backgroundImageUrl: './assets/images/qatarpav3.jpg',
+                imageUrl: './assets/images/qatarpav3.jpg'
             },
             {
                 id: 3,
                 title: 'Capstone Design Award',
+                // subtitle: 'Recognized for Creativity and Innovation',
                 heroTitle: '3rd Place - Capstone Design Competition',
                 heroSubtitle: 'Awarded for “Best Prototype, Most Creative Design."',
                 content: 'Our Multidisciplinary Senior Design Project was honored with 3rd place in the annual College of Engineering Capstone Design Competition, standing out among strong competitors. The award recognized our prototype’s creativity, usability, and innovative integration of multiple disciplines, which is a testament to teamwork, persistence, and problem-solving.',
-                backgroundImageUrl: 'https://placehold.co/1200x800/475569/f8fafc?text=Capstone',
-                imageUrl: 'https://placehold.co/200x240/475569/f8fafc?text=Capstone'
+                backgroundImageUrl: './assets/images/capstonep1.jpeg',
+                imageUrl: './assets/images/image2.png'
             },
             {
                 id: 4,
                 title: 'KINDI Center',
+                // subtitle: 'Academic Excellence in Hand Rehabilitation Project',
                 heroTitle: 'KINDI Computing Research Center - Exceptional Research Recognition',
                 heroSubtitle: 'Honored for research contributions, dedication, and innovative solutions.',
                 content: 'I received formal recognition for my contributions to the project “Transforming Hand Rehabilitation: The Development of Soft Actuators, Extended Reality (XR) Environments, and Doctor-Patient Interaction Platform” as part of the Multi-Disciplinary Senior Design Project (MSDP-CS) at Qatar University. This acknowledgment highlighted my dedication, research excellence, and role in developing a multidisciplinary solution that combines XR, robotics, and interactive healthcare technology, fulfilling graduation requirements for the College of Engineering (Academic Year 2024-2025).',
-                backgroundImageUrl: 'https://placehold.co/1200x800/64748b/f8fafc?text=KINDI+Center',
-                imageUrl: 'https://placehold.co/200x240/64748b/f8fafc?text=KINDI+Center'
+                backgroundImageUrl: './assets/images/kp1.jpg',
+                imageUrl: './assets/images/kindi.jpg'
             },
             {
                 id: 5,
                 title: 'Hand Rehabilitation',
+                // subtitle: 'Gamification Meets Assistive Robotics',
                 heroTitle: 'Immersive and Assistive Hand-Rehabilitation Solution',
                 heroSubtitle: 'Enhancing recovery through XR technology, gamification, and robotics.',
                 content: 'Developed an interactive rehabilitation solution that combines a robotic hand glove with gamified Extended Reality (XR) experiences. Patients engage in immersive exercises while health care providers track progress via a web-based platform. My contributions included XR game design and development, server configuration, and full-stack integration between systems to ensure a seamless user experience. We worked closely with many stakeholders, including physiotherapists, to ensure the solution met real-world needs and improved rehabilitation outcomes.',
-                imageUrl: 'https://placehold.co/200x240/075985/f8fafc?text=Rehabilitation',
+                imageUrl: './assets/images/msdp.png',
                 youtubeUrl: 'https://www.youtube.com/embed/mY64sZs52Mk',
-                backgroundImageUrl: 'https://placehold.co/1200x800/075985/f8fafc?text=Hand+Rehabilitation',
+                backgroundImageUrl: './assets/images/ReGrabP1.jpg',
             },
             {
                 id: 6,
                 title: 'Sneak n Snatch',
+                // subtitle: 'Collaborative Code Editor',
                 heroTitle: 'Game Design and Development',
                 heroSubtitle: 'A 3D fantasy stealth game.',
                 content: 'Designed and developed, using Unity, a full 3D fantasy first-person stealth game where players hide as props while evading enemies and searching for the exit.',
-                imageUrl: 'https://placehold.co/200x240/4c0519/f8fafc?text=Sneak+n+Snatch',
+                imageUrl: './assets/images/gamep1.jpg',
                 youtubeUrl: 'https://www.youtube.com/embed/qSNzHYYeCWU',
-                backgroundImageUrl: 'https://placehold.co/1200x800/4c0519/f8fafc?text=Sneak+n+Snatch',
+                backgroundImageUrl: './assets/images/gamep1.jpg',
             },
             {
                 id: 7,
                 title: 'Contact Me',
+                // subtitle: 'Get in touch',
                 heroTitle: 'Contact Me',
                 heroSubtitle: 'I am always open to new opportunities! Reach out to me via the following channels.',
                 contact: {
@@ -382,8 +371,8 @@
                     linkedin: 'https://www.linkedin.com/in/fatma-ali-elbakry-elbadrawy-746550226/',
                     github: 'https://github.com/FatmaElbadrawy'
                 },
-                backgroundImageUrl: 'https://placehold.co/1200x800/1e293b/f8fafc?text=Contact+Me',
-                imageUrl: 'https://placehold.co/200x240/1e293b/f8fafc?text=Contact+Me'
+                backgroundImageUrl: './assets/images/temp.jpeg',
+                imageUrl: 'https://placehold.co/200x240/000000/ffffff?text=CONTACT'
             }
         ];
 
@@ -554,13 +543,13 @@
 
         modalCloseBtn.addEventListener('click', () => {
             videoModal.classList.remove('show');
-            videoPlayer.src = ""; 
+            videoPlayer.src = ""; // Stop the video
         });
 
         videoModal.addEventListener('click', (event) => {
             if (event.target === videoModal) {
                 videoModal.classList.remove('show');
-                videoPlayer.src = ""; 
+                videoPlayer.src = ""; // Stop the video
             }
         });
 
