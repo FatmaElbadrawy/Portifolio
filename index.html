@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #main-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1e293b;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            transition: background-color 0.5s ease-in-out, background-image 0.5s ease-in-out;
+        }
+
+        #main-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 4rem;
+            overflow: visible;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        #top-nav {
+            z-index: 30;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        #hero-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.5s ease;
+            margin-top: 6rem;
+            margin-bottom: 2rem;
+        }
+
+        #card-gallery-container {
+            width: 100%;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            padding: 6rem 4rem 6rem .6rem;
+            gap: 3rem;
+            justify-content: flex-start;
+            transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        #card-gallery-container.minimized {
+            height: 180px;
+            padding: 1rem 3rem;
+            gap: 1.5rem;
+            overflow: visible;
+        }
+
+        #card-gallery-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        #card-gallery-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .project-card {
+            display: inline-block;
+            width: 200px;
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 1rem;
+            box-shadow: none;
+            transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            will-change: transform;
+        }
+
+        .project-card:hover {
+            transform: scale(1.15) translateY(-10px);
+            z-index: 10;
+        }
+
+        .project-card:not(:hover) {
+            transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .project-card.active {
+            transform: scale(1.1);
+            border: 2px solid white;
+        }
+
+        #card-gallery-container.minimized .project-card {
+            width: 100px;
+            height: 120px;
+            border-radius: 0.5rem;
+            transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            padding: 0.5rem;
+            font-size: 0.5rem;
+            justify-content: flex-end;
+            text-align: left;
+        }
+
+        #card-gallery-container.minimized .project-card:hover {
+            transform: translateY(-10px) scale(1.4);
+            z-index: 10;
+        }
+
+        .white-box {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background-color: white;
+            color: black;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+
+        #card-gallery-container.minimized .white-box {
+            padding: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        
+        .card-content {
+            white-space: normal;
+        }
+
+        .card-content h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        #card-gallery-container.minimized .card-content h3 {
+            font-size: 0.5rem;
+            line-height: 1;
+            white-space: normal;
+        }
+
+        #video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #video-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -2rem;
+            right: -2rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        #nav-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            z-index: 20;
+        }
+
+        .nav-controls button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .nav-controls button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main-background"></div>
+
+    <div id="main-container">
+        <nav id="top-nav">
+            <div class="text-2xl font-bold">Fatma Elbadrawy</div>
+        </nav>
+        <div id="hero-content">
+        </div>
+
+        <div id="card-gallery-container">
+        </div>
+
+        <div id="nav-controls">
+            <button id="prev-btn" class="nav-controls-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <div id="progress-indicator" class="text-lg">01</div>
+            <button id="next-btn" class="nav-controls-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+            <div id="progress-bar-container" class="w-80 h-1.5 rounded-full bg-gray-700 overflow-hidden">
+                <div id="progress-bar" class="h-full bg-white transition-all duration-300 ease-out"></div>
+            </div>
+            <button id="minimize-btn" class="p-2 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition">
+                <svg id="minimize-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="video-modal">
+        <div class="modal-content">
+            <button id="modal-close" class="modal-close">&times;</button>
+            <div class="video-container">
+                <video id="video-player" controls preload="auto" class="w-full h-full object-cover rounded-lg"></video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projects = [
+            {
+                id: 1,
+                title: 'About Me',
+                subtitle: 'Game Designer & Developer',
+                heroTitle: 'Fatma Elbadrawy',
+                heroSubtitle: 'Inspired to create, design, and develop life-changing experiences.',
+                content: 'For me, technology is about equity, access, and creating opportunities before chasing convenience or luxury. I would rather build solutions that help those struggling or excluded than add another layer of luxury for those who already have plenty, because real impact comes from giving everyone the tools to thrive. I believe difference is essential, never shameful, and that mindset shapes the kind of projects I want to work on.',
+                imageUrl: './assets/images/pfp.jpeg',
+                backgroundImageUrl: './assets/images/temp.jpeg'
+            },
+            {
+                id: 2,
+                title: 'Japan Expo 2025',
+                // subtitle: 'Representing Qatar at Japan Expo 2025',
+                heroTitle: 'First Undergraduate Project to Represent Qatar University Globally',
+                heroSubtitle: 'Showcasing innovation on an international stage.',
+                content: 'My Multidisciplinary Senior Design Project team is proud to have worked on the first undergraduate project ever chosen to represent Qatar University at a global event. At Expo Japan 2025 in Osaka, we showcased a multidisciplinary innovation: a gamified AR/VR rehabilitation system paired with a robotic hand device. The project combined assistive technology, immersive design, and robotics to deliver a solution that empowers patients in their recovery journeys',
+                backgroundImageUrl: './assets/images/qatarpav3.jpg',
+                imageUrl: './assets/images/qatarpav3.jpg'
+            },
+            {
+                id: 3,
+                title: 'Capstone Design Award',
+                // subtitle: 'Recognized for Creativity and Innovation',
+                heroTitle: '3rd Place - Capstone Design Competition',
+                heroSubtitle: 'Awarded for “Best Prototype, Most Creative Design."',
+                content: 'Our Multidisciplinary Senior Design Project was honored with 3rd place in the annual College of Engineering Capstone Design Competition, standing out among strong competitors. The award recognized our prototype’s creativity, usability, and innovative integration of multiple disciplines, which is a testament to teamwork, persistence, and problem-solving.',
+                backgroundImageUrl: './assets/images/capstonep1.jpeg',
+                imageUrl: './assets/images/image2.png'
+            },
+            {
+                id: 4,
+                title: 'KINDI Center',
+                // subtitle: 'Academic Excellence in Hand Rehabilitation Project',
+                heroTitle: 'KINDI Computing Center - Exceptional Research Recognition',
+                heroSubtitle: 'Honored for research contributions, dedication, and innovative solutions.',
+                content: 'I received formal recognition for my contributions to the project “Transforming Hand Rehabilitation: The Development of Soft Actuators, Extended Reality (XR) Environments, and Doctor-Patient Interaction Platform” as part of the Multi-Disciplinary Senior Design Project (MSDP-CS) at Qatar University. This acknowledgment highlighted my dedication, research excellence, and role in developing a multidisciplinary solution that combines XR, robotics, and interactive healthcare technology, fulfilling graduation requirements for the College of Engineering (Academic Year 2024-2025).',
+                backgroundImageUrl: './assets/images/kp1.jpg',
+                imageUrl: './assets/images/kindi.jpg'
+            },
+            {
+                id: 5,
+                title: 'Hand Rehabilitation',
+                // subtitle: 'Gamification Meets Assistive Robotics',
+                heroTitle: 'Immersive and Assistive Hand-Rehabilitation Solution',
+                heroSubtitle: 'Enhancing recovery through XR technology, Gamification, and robotics.',
+                content: 'Developed an interactive rehabilitation solution that combines a robotic hand glove with gamified Extended Reality (XR) experiences. Patients engage in immersive exercises while health care providers track progress via a web-based platform. My contributions included XR game design and development, server configuration, and full-stack integration between systems to ensure a seamless user experience.',
+                imageUrl: './assets/images/msdp.png',
+                videoUrl: './assets/videos/prototype_video_MSDPv4.mp4',
+                backgroundImageUrl: './assets/images/ReGrabP1.jpg',
+            },
+            {
+                id: 6,
+                title: 'Sneak n Snatch',
+                // subtitle: 'Collaborative Code Editor',
+                heroTitle: 'Game Design and Development',
+                heroSubtitle: 'A 3D fantasy stealth game.',
+                content: 'Designed and developed, using Unity, a full 3D fantasy first-person stealth game where players hide as props while evading enemies and searching for the exit.',
+                imageUrl: './assets/images/gamep1.jpg',
+                videoUrl: './assets/videos/gameplay.mp4',
+                backgroundImageUrl: './assets/images/gamep1.jpg',
+            },
+            {
+                id: 7,
+                title: 'Contact Me',
+                // subtitle: 'Get in touch',
+                heroTitle: 'Contact Me',
+                heroSubtitle: 'I am always open to new opportunities! Reach out to me via the following channels.',
+                contact: {
+                    email: 'fatma.elbadrawyy@gmail.com',
+                    linkedin: 'https://www.linkedin.com/in/fatma-ali-elbakry-elbadrawy-746550226/',
+                    github: 'https://github.com/FatmaElbadrawy'
+                },
+                backgroundImageUrl: './assets/images/temp.jpeg',
+                imageUrl: 'https://placehold.co/200x240/000000/ffffff?text=CONTACT'
+            }
+        ];
+
+        const mainBackground = document.getElementById('main-background');
+        const cardContainer = document.getElementById('card-gallery-container');
+        const heroContent = document.getElementById('hero-content');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const progressIndicator = document.getElementById('progress-indicator');
+        const minimizeBtn = document.getElementById('minimize-btn');
+        const minimizeIcon = document.getElementById('minimize-icon');
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('video-player');
+        const modalCloseBtn = document.getElementById('modal-close');
+        const progressBar = document.getElementById('progress-bar');
+        let activeCardIndex = 0;
+        let isMinimized = false;
+
+        function renderHeroContent(project) {
+            heroContent.style.opacity = 0;
+            setTimeout(() => {
+                let contentHTML = '';
+                if (project.videoUrl) {
+                    contentHTML = `
+<h1 class="text-4xl font-bold mb-4">${project.heroTitle}</h1>
+<p class="text-xl text-gray-300 mb-6">${project.heroSubtitle}</p>
+<p class="text-lg leading-relaxed">${project.content}</p>
+<div>
+<button id="demo-btn" class="mt-4 flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-full shadow-lg hover:bg-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 transform">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+</svg>
+<span>Watch Demo</span>
+</button>
+</div>
+`;
+                } else if (project.contact) {
+                    contentHTML = `
+<h1 class="text-4xl font-bold mb-4">${project.heroTitle}</h1>
+<p class="text-xl text-gray-300 mb-6">${project.heroSubtitle}</p>
+<div class="flex space-x-6 justify-start mt-8">
+<a href="mailto:${project.contact.email}" class="text-white hover:text-blue-400 transition-colors duration-300">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
+<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+</svg>
+</a>
+<a href="${project.contact.linkedin}" target="_blank" class="text-white hover:text-blue-400 transition-colors duration-300">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 24 24" fill="currentColor">
+<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.761 0-.971.784-1.761 1.75-1.761s1.75.79 1.75 1.761c0 .971-.784 1.761-1.75 1.761zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+</svg>
+</a>
+<a href="${project.contact.github}" target="_blank" class="text-white hover:text-blue-400 transition-colors duration-300">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 24 24" fill="currentColor">
+<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.372 3.535 9.947 8.417 11.503
+.615.114.814-.247.814-.542 0-.266-.009-.974-.015-1.912-3.447.742-4.187-1.686-4.187-1.686-.561-1.425-1.37-1.801-1.37-1.801-1.124-.766.084-.751.084-.751 1.24.085 1.892 1.272 1.892 1.272 1.1 1.884 2.873 1.336 3.565 1.021.112-.797.433-1.336.79-1.644-2.738-.31-5.608-1.368-5.608-6.076 0-1.341.484-2.436 1.284-3.291-.129-.31-.555-1.558.125-3.243 0 0 1.047-.33 3.425 1.258
+.997-.275 2.064-.413 3.12-.418 1.056.005 2.122.143 3.12.418 2.376-1.588 3.423-1.258 3.423-1.258.68 1.685.253 2.933.126 3.243.801.855 1.283 1.95 1.283 3.291 0 4.719-2.875 5.764-5.626 6.066.442.38.826 1.128.826 2.275 0 1.643-.015 2.969-.015 3.375 0 .298.199.65.82
+.542 4.882-1.556 8.415-6.131 8.415-11.503 0-6.627-5.373-12-12-12z" />
+</svg>
+</a>
+</div>
+`;
+                } else {
+                    contentHTML = `
+<h1 class="text-4xl font-bold mb-4">${project.heroTitle}</h1>
+<p class="text-xl text-gray-300 mb-6">${project.heroSubtitle}</p>
+<p class="text-lg leading-relaxed">${project.content}</p>
+`;
+                }
+                heroContent.innerHTML = contentHTML;
+                heroContent.style.opacity = 1;
+
+                if (project.videoUrl) {
+                    const demoBtn = document.getElementById('demo-btn');
+                    demoBtn.addEventListener('click', () => {
+                        videoPlayer.src = project.videoUrl;
+                        videoModal.classList.add('show');
+                        videoPlayer.addEventListener('loadeddata', () => {
+                            try {
+                                videoPlayer.play();
+                            } catch (error) {
+                                console.error('Autoplay was prevented:', error);
+                            }
+                        }, { once: true });
+                    });
+                }
+
+            }, 500);
+        }
+
+        function createCard(project) {
+            const card = document.createElement('div');
+            card.classList.add('project-card');
+            if (project.imageUrl) {
+                card.style.backgroundImage = `url('${project.imageUrl}')`;
+            } else {
+                card.style.backgroundColor = project.bgColor;
+            }
+            card.setAttribute('data-id', project.id);
+            card.innerHTML = `
+<div class="white-box">
+<div class="card-content">
+<h3>${project.title}</h3>
+</div>
+</div>
+`;
+            card.addEventListener('click', () => {
+                const index = projects.findIndex(p => p.id === project.id);
+                if (index !== -1) {
+                    setActiveCard(index);
+                }
+            });
+            return card;
+        }
+
+        projects.forEach(project => {
+            cardContainer.appendChild(createCard(project));
+        });
+
+        const cards = document.querySelectorAll('.project-card');
+        const gap = 3;
+        const minimizedGap = 1.5;
+
+        function setActiveCard(index) {
+            if (index < 0 || index >= projects.length) return;
+            activeCardIndex = index;
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === index);
+            });
+            const currentProject = projects[activeCardIndex];
+
+            if (currentProject.backgroundImageUrl) {
+                mainBackground.style.backgroundImage = `url('${currentProject.backgroundImageUrl}')`;
+                mainBackground.style.backgroundColor = 'transparent'; 
+            } else {
+                mainBackground.style.backgroundImage = 'none'; 
+                mainBackground.style.backgroundColor = currentProject.bgColor;
+            }
+
+            renderHeroContent(currentProject);
+            const activeCard = cards[activeCardIndex];
+            const cardOffset = activeCard.offsetLeft;
+            const cardWidth = activeCard.offsetWidth;
+            const containerWidth = cardContainer.offsetWidth;
+            cardContainer.scrollTo({
+                left: cardOffset - (containerWidth / 2) + (cardWidth / 2),
+                behavior: 'smooth'
+            });
+            progressIndicator.textContent = `${(activeCardIndex + 1).toString().padStart(2, '0')}`;
+            const progressPercentage = (activeCardIndex / (projects.length - 1)) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+        nextBtn.addEventListener('click', () => {
+            setActiveCard(activeCardIndex + 1);
+        });
+        prevBtn.addEventListener('click', () => {
+            setActiveCard(activeCardIndex - 1);
+        });
+
+        minimizeBtn.addEventListener('click', () => {
+            isMinimized = !isMinimized;
+            cardContainer.classList.toggle('minimized', isMinimized);
+            updateMinimizeButtonIcon();
+            setActiveCard(activeCardIndex);
+        });
+
+        function updateMinimizeButtonIcon() {
+            minimizeIcon.innerHTML = isMinimized ?
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />' :
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />';
+        }
+
+        modalCloseBtn.addEventListener('click', () => {
+            videoModal.classList.remove('show');
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.src = "";
+        });
+
+        videoModal.addEventListener('click', (event) => {
+            if (event.target === videoModal) {
+                videoModal.classList.remove('show');
+                videoPlayer.pause();
+                videoPlayer.currentTime = 0;
+                videoPlayer.src = "";
+            }
+        });
+
+        setActiveCard(0);
+        updateMinimizeButtonIcon();
+        cardContainer.addEventListener('mouseover', (e) => {
+            const hoveredCard = e.target.closest('.project-card');
+            if (!hoveredCard || hoveredCard.classList.contains('active')) {
+                return;
+            }
+            hoveredCard.style.transform = `scale(${isMinimized ? 1.4 : 1.15}) translateY(${isMinimized ? -10 : -10}px)`;
+            hoveredCard.style.zIndex = '10';
+
+            cards.forEach(card => {
+                if (card !== hoveredCard) {
+                    card.style.transform = `scale(0.9)`;
+                    card.style.opacity = '0.5';
+                }
+            });
+        });
+
+        cardContainer.addEventListener('mouseout', (e) => {
+            cards.forEach(card => {
+                card.style.transform = '';
+                card.style.zIndex = '1';
+                card.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+
+</html>
